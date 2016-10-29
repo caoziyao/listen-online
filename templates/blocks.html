@@ -1,0 +1,7 @@
+{% macro pager(page) %}
+
+    {% for i in range(0, page.get('total')) %}
+    <li><a href="{{url_for('play.index', page=i+1)}}">{{i+1}}</a></li>
+    {% endfor %}
+
+{% endmacro %}

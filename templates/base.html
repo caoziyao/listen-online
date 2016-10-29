@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+    <title>{% block title %}{% endblock %}</title>
+
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+     {% block css %}{% endblock %}
+    
+    <script src="/static/js/alertify.min.js"></script>
+    <script src="/static/js/jquery-3.0.0.min.js"></script>
+
+     {% block script %}{% endblock %}
+
+</head>
+<body>
+    <div class="container">
+        {%  block main %}
+        {% endblock %}
+    </div>
+</body>
+</html>

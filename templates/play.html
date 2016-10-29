@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% import "blocks.html" as blocks %}
+
+{% block css %}
+<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/play.css') }}">
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/play.js"></script>
+{% endblock %}
+
+{%  block main %}
+
+    <div class="playbar">
+        <img class="img-playbar" src="{{ playlists[0].img_url }}" alt="pic">
+        <div class="left-playbar">
+            <p class="title-playbar">{{ playlists[0].title }}</p>
+            <audio  onplay="myplay()" id="media" controls="controls" autoplay="autoplay"   preload="auto" 
+                src="{{ playlists[0].url }}">
+                你的浏览器不支持audio标签
+            </audio>           
+        </div>
+    </div>
+
+   
+    <div class="clearfix"></div>
+
+   <div class="nav-bar">
+       <ul>
+           <li><a href="#">豆瓣FM</a></li>
+           <li><a href="#">网易</a></li>
+           <li><a href="#">QQ音乐</a></li>
+           <li><a href="#">虾米</a></li>
+       </ul>
+   </div>
+
+
+
+<div id="id-main" class="clearfix">
+    <ul>
+        {% for al in albums %}
+            <li class="album-content">
+                
+                <a href="{{ url_for('play.play', album_id=al.album_id, page=page.get('page')) }}"><img class='img-main' src="{{ al.cover_img_url }}" alt="绵绵"></a>
+                <p>{{ al.title }}</p>
+            </li>
+        {% endfor %}      
+    </ul>
+
+    <ul class="page">
+        {{ blocks.pager(page) }}
+    </ul>
+</div>
+
+<!--隐藏的内容-->
+<div id="id-playbar">
+    <div class="playlist" style="display:none;">
+        {% for pl in playlists %}
+            <div class="item-playlist">
+                <p class="item-url">{{ pl.url }}</p>
+                <p class="item-img-url">{{ pl.img_url }}</p>
+                <p class="item-title">{{ pl.title }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+
+{% endblock %}
