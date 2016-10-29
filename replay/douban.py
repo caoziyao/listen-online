@@ -1,25 +1,11 @@
 
-import requests
-from bs4 import BeautifulSoup
-import json
+from replay import *
 
-import os
-from flask import url_for
-from flask import Flask
+from replay.douban_url import get_doubanfmUrl
 from models.play import Playlist
-
 from models.play import Album
 from models.play import Playlist
 
-def _playlist_id():
-    """
-    playlist_id
-    """
-    id = [
-        10416548,
-        8961784,
-    ]
-    return id
 
 def _db_h(url):
     """
@@ -63,11 +49,25 @@ def json_load():
     with open(path, 'r', encoding='utf-8') as f:
         return json.loads(s)
 
-def get_playlist():
+
+def spider_fm():
+    """
+    api
+    """
+    # urls = get_doubanfmUrl()
+    ids = [270638]  #neteasy test
+    # ids = [368352, 10756490, 306878, 7925757,  287050, 450370, 9714644, 260086, 1298891, 287050, 6595891, 485660, 5521949]
+    for id in ids:
+        url = 'https://douban.fm/j/v2/songlist/{}/?kbps=192'.format(id)
+        get_playlist(url, id)
+
+    time.sleep(1)
+
+def get_playlist(url, playlist_id):
     # id 443635  10416548
     # playlist_id = 10416548
-    playlist_id = 306878 #7925757  #287050  #450370 #9714644  # 260086
-    url = 'https://douban.fm/j/v2/songlist/{}/?kbps=192'.format(playlist_id)
+    # playlist_id = 306878 #7925757  #287050  #450370 #9714644  # 260086
+    # url = 'https://douban.fm/j/v2/songlist/{}/?kbps=192'.format(playlist_id)
     print(url)
 
     # 获取网页信息
@@ -87,6 +87,7 @@ def get_playlist():
     d = dict(playlist=result, album=album)
     
     a = Album(d)
+    a.nusicfm_id = 2    # 1 代表 doubanFM
     a.save()
 
     for pl in d.get('playlist'):

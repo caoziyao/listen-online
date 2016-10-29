@@ -17,6 +17,13 @@ app = Flask(__name__)
 db_path = 'play.sqlite'
 manager = Manager(app)
 
+@app.errorhandler(404)
+def error404(e):
+    """
+    自定义 404 界面
+    """
+    return render_template('404.html')
+
 
 def configure_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True

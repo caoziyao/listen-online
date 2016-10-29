@@ -1,6 +1,7 @@
 
 .img-playbar{
-    border-radius: 0px;
+    border-radius: 50%;
+    /*border-radius: 0px;*/
     line-height: 144px;
     height: 144px;
 }
@@ -9,11 +10,13 @@
     /*float: left;*/
     margin-left: 20px;
     margin-top: 20px;
-    /*width: 200px;*/
+    height: 250px;
+    width: 200px;
+    overflow: hidden;
 }
 
 .img-main{
-    border-radius: 0px;
+    /*border-radius: 50%;*/
     line-height: 184px;
     height: 184px;
 }
@@ -58,4 +61,12 @@ ul li{
 
 .nav-bar ul li{
     margin-left: 10px;
+}
+
+.page{
+    margin: 0 auto;
+    width: 40%;
+}
+.page li{
+    margin-left: 20px;
 }

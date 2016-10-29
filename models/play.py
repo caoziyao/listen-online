@@ -16,10 +16,16 @@ from . import db
 class MusicFM(db.Model, ModelMixin):
     """
     1 doubanFM
-    2 NetEasey
+    2 netease
+    3 qq
+    4 xiami
     """
     __tablename__ = 'musicfms'
     id = db.Column(db.Integer, primary_key=True)
+
+    # 定义一个关系
+    # foreign_keys 有时候可以省略, 比如现在...
+    album = db.relationship('Album', backref='musicfm')
     
 
 class Album(db.Model, ModelMixin):
