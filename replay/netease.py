@@ -1,30 +1,8 @@
-# from replay import *
+from replay import *
 
 from bs4 import BeautifulSoup
 from flask import url_for
 from flask import Flask
-
-
-import requests
-import json
-import os
-import time
-import base64
-import hashlib
-import os.path
-import pyaes
-import binascii
-import logging
-import os.path
-import sys
-import urllib
-import gzip
-import io
-try:
-    from StringIO import StringIO as stringIOModule
-except ImportError:
-    from io import StringIO as stringIOModule
-
 
 from models.play import Album
 from models.play import Playlist
@@ -62,6 +40,14 @@ top_list_all = {
 
 default_timeout = 10
 
+modulus = '00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b72' + \
+          '5152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbd' + \
+          'a92557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe48' + \
+          '75d3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7'
+nonce = '0CoJUm6Qyw8W8jud'
+pubKey = '010001'
+
+
 # 获取高音质mp3 url
 def geturl(song):
     pass
@@ -78,6 +64,7 @@ header = {
         #'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
     }
 
+
 # 歌曲加密算法, 基于https://github.com/yanunon/NeteaseCloudMusic脚本实现
 def _encrypted_id(id):
     magic = bytearray('3go8&$8*3*3h0k(2)2')
@@ -91,12 +78,6 @@ def _encrypted_id(id):
     result = result.replace('+', '-')
     return result
 
-modulus = '00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b72' + \
-          '5152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbd' + \
-          'a92557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe48' + \
-          '75d3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7'
-nonce = '0CoJUm6Qyw8W8jud'
-pubKey = '010001'
 
 def _create_secret_key_old(size):
     randlist = map(lambda xx: (hex(ord(xx))[2:]), os.urandom(size))
@@ -105,6 +86,7 @@ def _create_secret_key_old(size):
 def _create_secret_key(size):
     randlist = map(lambda xx: (hex(ord(chr(xx)))[2:]), os.urandom(size))
     return (''.join(randlist))[0:16]
+
 
 # python 2
 # aes = pyaes.AESModeOfOperationCBC(sec_key, iv='0102030405060708')
@@ -121,6 +103,7 @@ def _aes_encrypt(text, sec_key):
     ciphertext = base64.b64encode(ciphertext)
     return ciphertext.decode('utf-8')
 
+
 # The hex codec has been chucked in 3.x. Use binascii instead:
 # python 2
 # rs = int(text.encode('hex'), 16) ** int(pubKey, 16) % int(modulus, 16)
@@ -128,6 +111,7 @@ def _rsa_encrypt(text, pub_key, modulus):
     text = text[::-1]
     rs = int(binascii.hexlify(text.encode('utf-8')), 16) ** int(pubKey, 16) % int(modulus, 16)
     return format(rs, 'x').zfill(256)
+
 
 def _encrypted_request(text):
     text = json.dumps(text)
@@ -139,6 +123,7 @@ def _encrypted_request(text):
         'encSecKey': enc_sec_key
     }
     return data
+
 
 ########################################
 # network
@@ -152,6 +137,7 @@ def chunk_report(bytes_so_far, chunk_size, total_size):
 
     if bytes_so_far >= total_size:
         sys.stdout.write('\n')
+
 
 def chunk_read(response, chunk_size=8192, report_hook=None):
     total_size = response.info().getheader('Content-Length').strip()
@@ -169,6 +155,7 @@ def chunk_read(response, chunk_size=8192, report_hook=None):
         if report_hook:
             report_hook(bytes_so_far, chunk_size, total_size)
     return total
+
 
 """
 python 3.x中urllib库和urilib2库合并成了urllib库。。
@@ -235,7 +222,6 @@ def _ne_h(url, v=None):
         '/33.0.1750.152 Safari/537.36'
     }
     return h(url, v=v, extra_headers=extra_headers)
-
 
 
 def song_img(song_id):
@@ -358,7 +344,6 @@ def playlist_detail(album, id):
 
     # print(play_list)
     # return play_list
-
 
 
 # b = os.urandom(1)

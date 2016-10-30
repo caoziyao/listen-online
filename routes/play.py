@@ -3,6 +3,7 @@ from routes import *
 
 from replay.douban import spider_fm
 from replay.netease import neteasy_spider
+from replay.douban import get_album
 
 from models.play import Album
 from models.play import Playlist
@@ -98,7 +99,8 @@ def spider_task():
     多线程爬虫
     """
     # spider_fm()
-    neteasy_spider()
+    get_album()
+    # neteasy_spider()
 
     # starttime = time.time()  # 记录开始时间
     # threads = []  # 创建一个线程列表，用于存放需要执行的子线程
