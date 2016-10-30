@@ -1,8 +1,7 @@
 
 from replay import *
 
-from replay.douban_url import get_doubanfmUrl
-from models.play import Playlist
+
 from models.play import Album
 from models.play import Playlist
 
@@ -55,7 +54,7 @@ def spider_fm():
     api
     """
     # urls = get_doubanfmUrl()
-    ids = [270638]  #neteasy test
+    ids = [301715, 10767176, 1388497, 429077, 1342044, 8961784, 11805147, 260812]  
     # ids = [368352, 10756490, 306878, 7925757,  287050, 450370, 9714644, 260086, 1298891, 287050, 6595891, 485660, 5521949]
     for id in ids:
         url = 'https://douban.fm/j/v2/songlist/{}/?kbps=192'.format(id)
@@ -84,15 +83,15 @@ def get_playlist(url, playlist_id):
         # print(song)
         result.append(_convert_song2(song))
 
-    d = dict(playlist=result, album=album)
+    # d = dict(playlist=result, album=album)
     
-    a = Album(d)
-    a.nusicfm_id = 2    # 1 代表 doubanFM
+    a = Album(album)
+    a.nusicfm_id = 1    # 1 代表 doubanFM
     a.save()
 
-    for pl in d.get('playlist'):
+    for pl in result:
         p = Playlist(pl)
         p.album_id = a.id
         p.save()
-    return d
+    return None     # 因为保存到数据库中了，不需要在返回
     

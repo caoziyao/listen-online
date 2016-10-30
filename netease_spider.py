@@ -26,10 +26,22 @@ except ImportError:
     from io import StringIO as stringIOModule
 
 
+# 导入:
+from sqlalchemy import Column, String, create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Table,Column,Integer,String,MetaData,ForeignKey  
+# 创建对象的基类:
+Base = declarative_base()
+
+
+# 初始化数据库连接:
+engine=create_engine('sqlite:///play.sqlite',echo=True) 
+
+
 from models.play import Album
 from models.play import Playlist
-
-
+ 
 
 '''
 网易云音乐 Api
@@ -237,11 +249,41 @@ def _ne_h(url, v=None):
     return h(url, v=v, extra_headers=extra_headers)
 
 
+# 歌单（网友精选碟） hot||new http://music.163.com/#/discover/playlist/
+def top_playlist(category='华语', order='hot', offset=0, limit=50):
+    """
+    返回 标题、封面图片、url
+    """
+    action = 'http://music.163.com/discover/playlist/?cat=' + category
+    # try:
+    data = requests.get(action)
+    soup = BeautifulSoup(data.text, 'lxml')
+
+    host = 'http://music.163.com/#'
+    divs = soup.select('div.u-cover')
+    album = []
+    for div in divs:
+        img_url = div.find('img', attrs={"class": "j-flag"})['src']
+        title = div.find('a', attrs={'class': 'msk'})['title']
+        url = host + div.find('a', attrs={'class': 'msk'})['href']
+        album_id = div.find('a', attrs={'class': 'icon-play'})['data-res-id']
+        album_id = int(album_id)
+        # print(album_id)
+        # print(title, img_url, url)
+        album.append({'title': title, 'cover_img_url': img_url, 'url': url, 'album_id': album_id})
+
+    # d = dict(playlist=[], album=album)
+
+    for al in album:
+        a = Album(al)
+        a.nusicfm_id = 2    # 2 代表 doubanFM
+        a.save()
+
+    return album
 
 def song_img(song_id):
     action = 'http://music.163.com/m/song/{}?autoplay=true'.format(song_id)
     header = {
-        'Connection': 'keep-alive',
         'User-Agent': 'Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.23 Mobile Safari/537.36'
     }
     data = requests.get(action, headers=header)
@@ -250,7 +292,7 @@ def song_img(song_id):
     # url = soup.find('img', attrs={"class": "j-img"})['src']
     url = soup.select('div.img img')[0]['src']
     # print(url)
-    time.sleep(0.5)
+    time.sleep(1)
     return url
 
 
@@ -273,69 +315,24 @@ def song_url(song_id):
     # print('respones', response)
     url = response.get('data')[0].get('url')
     # print(url)
-    time.sleep(0.5)
+    time.sleep(1)
     return url
 
 
-# 歌单（网友精选碟） hot||new http://music.163.com/#/discover/playlist/
-def top_playlist(category='流行', order='hot', offset=0, limit=50):
-    """
-    返回 标题、封面图片、url
-    """
-    action = 'http://music.163.com/discover/playlist/?cat=' + category
-    # try:
-    data = requests.get(action)
-    soup = BeautifulSoup(data.text, 'lxml')
-
-    host = 'http://music.163.com/#'
-    divs = soup.select('div.u-cover')
-    album = []
-    print(divs)
-    for div in divs:
-        img_url = div.find('img', attrs={"class": "j-flag"})['src']
-        title = div.find('a', attrs={'class': 'msk'})['title']
-        url = host + div.find('a', attrs={'class': 'msk'})['href']
-        album_id = div.find('a', attrs={'class': 'icon-play'})['data-res-id']
-        album_id = int(album_id)
-
-        d = {'title': title, 'cover_img_url': img_url, 'url': url, 'album_id': album_id}
-        album.append(d)
-
-        flag = False
-        alivs = Album.query.filter_by(nusicfm_id=2).all()
-        for als in alivs:
-            if album_id == als.album_id:
-                flag = True
-                break
-        if flag:
-            continue
-
-
-        # 保存到数据库中
-        # for al in album:
-        a = Album(d)
-        a.nusicfm_id = 2    # 2 代表 doubanFM
-        a.save()
-        print('a.id', a.id)
-        playlist_detail(d, a.id)
-    # return album
-
-
 # 歌单详情
-def playlist_detail(album, id):
+def playlist_detail(album):
     """
     返回 歌单列表
     """
     # action = 'http://music.163.com/m/playlist?id=496240695'
     header = {
-        'Connection': 'keep-alive',
         'User-Agent': 'Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.23 Mobile Safari/537.36'
     }
     # action = 'http://music.163.com/#/playlist?id=496240695'
     # 变成 action = 'http://music.163.com/m/playlist?id=496240695'
     action = album.get('url').replace('#', 'm')
     print('geting from', action)
-    # time.sleep(0.5)
+    # time.sleep(2)
     data = requests.get(action, headers=header)
     soup = BeautifulSoup(data.text, 'lxml')
     lisa = soup.select('li.f-bd')
@@ -344,20 +341,27 @@ def playlist_detail(album, id):
     play_list = []
     for li in lisa:
         song_id = li.find('a', attrs={'data-res-type': 'song'})['data-res-id']
-        title = li.h3.get_text()
+        title = li.h3.get_text()      #<h3 class="s-fc1 f-thide">阴天快乐</h3>
         img_url = song_img(song_id)
         url = song_url(song_id)
-        print(title, url, img_url)
-        d = {'title': title, 'url': url, 'img_url': img_url}
-        play_list.append(d)
+        # print(title, url, img_url)
+        print('in here')
+        play_list.append({'title': title, 'url': url, 'img_url': img_url})
 
-        # save db
-        p = Playlist(d)
-        p.album_id = id
+        # a = Album(d)
+        # a.nusicfm_id = 1  # 1 代表 doubanFM
+        # a.save()
+    album_id = album.get('album_id')
+    print('out here', album_id)
+    for pl in play_list:
+        print('pl', pl)
+        p = Playlist(pl)
+        p.album_id = album_id
+        print('save playlist', album_id)
         p.save()
 
     # print(play_list)
-    # return play_list
+    return play_list
 
 
 
@@ -365,10 +369,10 @@ def playlist_detail(album, id):
 # a = ord(b)
 # print(a)
 def neteasy_spider():
-    # save album
-
-    top_playlist()
-
+    album = top_playlist()
+    # print(album)
+    for l in album:
+        playlist_detail(l)
 
 if __name__ == '__main__':
     neteasy_spider()

@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
+from flask import render_template
 
 
 from models import db
@@ -47,9 +48,9 @@ def server():
         debug=True,
         host='0.0.0.0',
         port=3000,
+        # threaded=True,
     )
     app.run(**config)
-
 
 def configure_manager():
     """

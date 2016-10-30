@@ -4,6 +4,7 @@ from . import ModelMixin
 from . import db
 
 
+
 # class Playlist(object):
 #     """
 #     播放列表
@@ -46,9 +47,10 @@ class Album(db.Model, ModelMixin):
     playlist = db.relationship('Playlist', backref='album')
 
     def __init__(self, d):
-        self.title = d.get('album').get('title')
-        self.cover_img_url = d.get('album').get('cover_img_url')
-        self.album_id = d.get('album').get('album_id')
+        self.title = d.get('title')
+        self.cover_img_url = d.get('cover_img_url')
+        self.album_id = d.get('album_id')
+
 
 class Playlist(db.Model, ModelMixin):
     """
@@ -65,10 +67,10 @@ class Playlist(db.Model, ModelMixin):
     # relationship
     # reviews = db.relationship('Review', backref='chest')
 
-    def __init__(self, l):
+    def __init__(self, d):
         # print('chest init', form)
 
-        self.img_url = l.get('img_url')
-        self.title = l.get('title')
-        self.url = l.get('url')
+        self.img_url = d.get('img_url')
+        self.title = d.get('title')
+        self.url = d.get('url')
 
