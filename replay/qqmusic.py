@@ -77,11 +77,13 @@ def parsed_playlist(album_id):
     for ur in urls:
         time.sleep(0.2)
         url = 'http:' + ur['href']
+        img_url = get_img(url)
+
         qqsid = url.split('/song/')[1].split('.html')[0]
         url = get_url_by_id(qqsid)
         print(url)
         title = ur.get_text()
-        img_url = get_img(url)
+
 
         p = Playlist({'url':url, 'title':title, 'img_url':img_url})
         p.album_id = a.id
@@ -151,7 +153,7 @@ def qq_master():
 
     urls = ['http://c.y.qq.com/v8/fcg-bin/album_library?' + 
             'g_tk=938407465&jsonpCallback=GetAlbumListJsonCallback&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-' +
-            '8&notice=0&platform=yqq&needNewCode=0&cmd=get_album_info&page={}&pagesize=20&sort=1&language=-1&genre=0&year=1&pay=0&type=-1&company=-1'.format(i) for i in range(0, 10) ]
+            '8&notice=0&platform=yqq&needNewCode=0&cmd=get_album_info&page={}&pagesize=20&sort=1&language=-1&genre=0&year=1&pay=0&type=-1&company=-1'.format(i) for i in range(3, 10) ]
 
     for url in urls:
         q.put({'url':url, 'parsed':'album'})

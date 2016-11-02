@@ -10,8 +10,6 @@ from models.play import Playlist
 from models.play import MusicFM
 
 main = Blueprint('play', __name__)
-save_albumid = 1
-
 
 def get_albumlist(page, als):
     """
@@ -35,17 +33,18 @@ def play(album_id=None, page=1, fmid=1):
     """
     global save_albumid
     # 所有专辑
+    als = MusicFM.query.get(fmid).album
+
     if album_id is not None:
         id = int(album_id)
         save_albumid = id
-        al = Album.query.filter_by(album_id=id).first()
+        al = Album.query.filter_by(id=id).first()
     else:
-        al = Album.query.filter_by(album_id=save_albumid).first()
+        al = als[0]#Album.query.filter_by(album_id=save_albumid).first()
 
-    als = MusicFM.query.get(fmid).album
+
     # als = Album.query.all()
-    # pl = al.playlist
-    pl = als[0].playlist
+    pl = al.playlist
 
     l = get_albumlist(page, als)
 
