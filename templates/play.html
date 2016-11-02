@@ -29,7 +29,7 @@
        <ul>
            <li><a href="{{ url_for('play.index', fmid=1) }}">豆瓣FM</a></li>
            <li><a href="{{ url_for('play.index', fmid=2) }}">网易</a></li>
-           <li><a href="#">QQ音乐</a></li>
+           <li><a href="{{ url_for('play.index', fmid=3) }}">QQ音乐</a></li>
            <li><a href="#">虾米</a></li>
        </ul>
    </div>
@@ -40,7 +40,7 @@
     <ul>
         {% for al in albums %}
             <li class="album-content">
-                <a class="page-turning" href="{{ url_for('play.play', album_id=al.album_id, page=page.get('page'), fmid=fmid) }}"><img class='img-main' src="{{ al.cover_img_url }}" alt="绵绵"></a>
+                <a class="page-turning" href="{{ url_for('play.play', album_id=al.id, page=page.get('page'), fmid=fmid) }}"><img class='img-main' src="{{ al.cover_img_url }}" alt="绵绵"></a>
                 <p>{{ al.title }}</p>
             </li>
         {% endfor %}      

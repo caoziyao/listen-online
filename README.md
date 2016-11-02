@@ -16,16 +16,16 @@ listen music online
 安装
 ----------
 后台基于flask开发，可以用Python环境直接运行。
-1. pip环境下安装在requirements下的package
+1. pip环境下安装在static下的package
  pip install -r static/dev.txt
 2. python app.py
-3. 访问 http://localhost:8888/
+3. 访问 http://localhost:3000/
 
 后续改进
 ----
 1. 搜索多家在线音乐提供商的资源
 2. 制作自己的歌单
-3 
+3.
 
 致谢
 ----

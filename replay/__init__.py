@@ -2,7 +2,7 @@
 from bs4 import BeautifulSoup
 from flask import url_for
 from flask import Flask
-
+from flask import url_for
 
 import requests
 import json
@@ -19,6 +19,11 @@ import sys
 import urllib
 import gzip
 import io
+from bs4 import BeautifulSoup
+
+from models.play import Album
+from models.play import Playlist
+
 try:
     from StringIO import StringIO as stringIOModule
 except ImportError:

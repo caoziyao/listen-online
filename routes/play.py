@@ -1,16 +1,16 @@
 from models.play import Playlist
 from routes import *
 
-from replay.douban import spider_fm
+from replay.douban import douban_master
 from replay.netease import neteasy_spider
-from replay.douban import get_album
+from replay.qqmusic import qqmusic_fm
 
 from models.play import Album
 from models.play import Playlist
 from models.play import MusicFM
 
 main = Blueprint('play', __name__)
-save_albumid = 368352
+save_albumid = 1
 
 
 def get_albumlist(page, als):
@@ -44,8 +44,9 @@ def play(album_id=None, page=1, fmid=1):
 
     als = MusicFM.query.get(fmid).album
     # als = Album.query.all()
-    pl = al.playlist
-    
+    # pl = al.playlist
+    pl = als[0].playlist
+
     l = get_albumlist(page, als)
 
     total = len(als) // 8 + 1
@@ -90,25 +91,10 @@ def spider():
     爬取数据
     :return:
     """
-    spider_task()
+    # douban_fm()
+    qqmusic_fm()
     # return redirect(url_for('play.index'))
     return 'hello'
 
-def spider_task():
-    """
-    多线程爬虫
-    """
-    # spider_fm()
-    get_album()
-    # neteasy_spider()
 
-    # starttime = time.time()  # 记录开始时间
-    # threads = []  # 创建一个线程列表，用于存放需要执行的子线程
-    # t1 = threading.Thread(target=neteasy_spider)  # 创建第一个子线程，子线程的任务是调用task1函数，注意函数名后不能有（）
-    # threads.append(t1)  # 将这个子线程添加到线程列表中
-    # for t in threads:  # 遍历线程列表
-    #     t.setDaemon(True)  # 将线程声明为守护线程，必须在start() 方法调用之前设置，如果不设置为守护线程程序会被无限挂起
-    #     t.start()  # 启动子线程
-    # endtime = time.time();  # 记录程序结束时间
-    # totaltime = endtime - starttime;  # 计算程序执行耗时
-    # print("耗时：{0:.5f}秒".format(totaltime));  # 格式输出耗时
+
