@@ -35,6 +35,7 @@ def configure_app():
     app.register_blueprint(routes_play)
 
 
+ # gunicorn
 def configured_app():
     configure_app()
     return app
@@ -45,7 +46,7 @@ def configured_app():
 def server():
     app = configured_app()
     config = dict(
-        debug=True,
+        debug=False,
         host='0.0.0.0',
         port=3000,
         # threaded=True,

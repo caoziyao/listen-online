@@ -153,7 +153,7 @@ def qq_master():
 
     urls = ['http://c.y.qq.com/v8/fcg-bin/album_library?' + 
             'g_tk=938407465&jsonpCallback=GetAlbumListJsonCallback&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-' +
-            '8&notice=0&platform=yqq&needNewCode=0&cmd=get_album_info&page={}&pagesize=20&sort=1&language=-1&genre=0&year=1&pay=0&type=-1&company=-1'.format(i) for i in range(3, 10) ]
+            '8&notice=0&platform=yqq&needNewCode=0&cmd=get_album_info&page={}&pagesize=20&sort=1&language=-1&genre=0&year=1&pay=0&type=-1&company=-1'.format(i) for i in range(100, 1000) ]
 
     for url in urls:
         q.put({'url':url, 'parsed':'album'})

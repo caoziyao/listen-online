@@ -9,6 +9,7 @@ listen music online
 
 * 主页：[https://github.com/caoziyao/listen-online](https://github.com/caoziyao/listen-online)
 * 联系邮箱：wyzycao@gmail.com
+* 运行：www.zycode.com:8080
 
 界面清新
 ![platform](https://github.com/caoziyao/listen-online/blob/master/static/img/1.PNG)  
