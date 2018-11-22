@@ -12,8 +12,9 @@
 
 “_ getattribute_”与“_ getattr_”的最大差异在于：
 1. 无论调用对象的什么属性，包括不存在的属性，都会首先调用“_ getattribute_”方法；
-2. 只有找不到对象的属性时，才会调用“_ getattr_”方法；
+2. 只有找不到对象的属性时，才会调用“_getattr_”方法；
 """
+from collections import OrderedDict
 
 
 class Record(object):
@@ -38,6 +39,10 @@ class Record(object):
         :return:
         """
         return self._values
+
+    def __repr__(self):
+        # return '<Record {}>'.format(self.export('json')[1:-1])
+        return '<Record {}>'.format(self.as_dict())
 
     def __getitem__(self, key):
         """
@@ -81,3 +86,18 @@ class Record(object):
             return self[key]
         except KeyError:
             return default
+
+    # def __dir__(self):
+    #     standard = dir(super(Record, self))
+    #     # Merge standard attrs with generated ones (from column names).
+    #     return sorted(standard + [str(k) for k in self.keys()])
+
+    def as_dict(self, ordered=False):
+        """
+        Returns the row as a dictionary, as ordered.
+        :param orderd:
+        :return:
+        """
+        items = zip(self.keys(), self.values())
+
+        return OrderedDict(items) if ordered else dict(items)

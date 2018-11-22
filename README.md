@@ -1,15 +1,15 @@
 # orm
 
 ```python
-import records
+import orm 
 
-db = records.Database('postgres://...')
-rows = db.query('select * from active_users')    # or db.query_file('sqls/active-users.sql')
+db = orm.Database('postgres://...')
+rows = db.query('select * from tb_user') 
 
 rows[0]
 
 for r in rows:
-    print(r.name, r.user_email)
+    print(r.id, r.username)
     
 rows.all()
 

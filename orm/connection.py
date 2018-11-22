@@ -6,7 +6,9 @@
 @time: 2018/11/22 
 @desc:
 """
-from app.record import Record
+from orm.record import Record
+from orm.record_collection import RecordCollection
+
 
 class Connection(object):
     """
@@ -19,7 +21,7 @@ class Connection(object):
     def close(self):
         pass
 
-    def query(self, query):
+    def query(self, query, fetchall=False):
         """
 
         :param query:
@@ -32,11 +34,9 @@ class Connection(object):
         # row_gen = (Record(cursor.keys(), row) for row in cursor)
         keys = cursor.keys()
         row_gen = (Record(keys, row) for row in cursor)
-        # row_gen = [Record(keys, row) for row in cursor]
 
-        for row in row_gen:
-            pass
-            # print(row.keys(), row.values())
-            print(row.get('id2', 'sss'))
-            # print(row.get('id'))
-        a = 1
+        results = RecordCollection(row_gen, cursor.rowcount)
+        # if fetchall:
+        #     results.all()
+
+        return results

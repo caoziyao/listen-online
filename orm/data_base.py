@@ -9,7 +9,7 @@
 import pymysql
 from sqlalchemy import create_engine, exc, inspect, text
 from sqlalchemy.ext.declarative import declarative_base
-from app.connection import Connection
+from orm.connection import Connection
 
 
 class Database(object):
